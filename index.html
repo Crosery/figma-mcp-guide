@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figma MCP Server — 17 Tools + 7 Skills 完全指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --fg: #1a1a2e;
+    --bg: #f8f7f4;
+    --accent: #a259ff;
+    --accent2: #1abcfe;
+    --accent3: #0acf83;
+    --accent4: #ff7262;
+    --accent5: #f24e1e;
+    --card-bg: #ffffff;
+    --code-bg: #1e1e2e;
+    --code-fg: #cdd6f4;
+    --dim: #6b7280;
+    --border: #e5e5e5;
+    --skill-accent: #ff6b35;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+
+  body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+
+  .slide {
+    min-height: 100vh; scroll-snap-align: start;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 6rem; position: relative; overflow: hidden;
+  }
+
+  .slide::after {
+    content: attr(data-num); position: absolute; bottom: 1.5rem; right: 2.5rem;
+    font-size: 0.8rem; color: var(--dim); font-weight: 500; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff; text-align: center; align-items: center;
+  }
+  .cover h1 {
+    font-size: 3.2rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.8rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .cover .subtitle { font-size: 1.3rem; font-weight: 300; color: rgba(255,255,255,0.7); margin-bottom: 2.5rem; }
+  .cover .figma-logo { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+  .cover .figma-logo span { width: 24px; height: 24px; border-radius: 50%; display: inline-block; }
+  .cover .meta { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+
+  /* Divider */
+  .divider { background: var(--fg); color: #fff; align-items: center; text-align: center; }
+  .divider h2 { font-size: 2.6rem; font-weight: 900; margin-bottom: 0.6rem; }
+  .divider p { font-size: 1.05rem; color: rgba(255,255,255,0.5); max-width: 600px; }
+  .divider.skill-divider { background: linear-gradient(135deg, #1a1a2e, #3d1a00 70%, #5a2800); }
+
+  /* Normal */
+  .slide h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .slide h2 .num {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    background: var(--accent); color: #fff; padding: 0.12rem 0.5rem; border-radius: 5px; font-weight: 600;
+  }
+  .slide h2 .num.skill-num { background: var(--skill-accent); }
+  .slide .tool-name {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;
+    color: var(--accent); margin-bottom: 1.2rem; font-weight: 600;
+  }
+  .slide .tool-name.skill-name { color: var(--skill-accent); }
+
+  .desc { font-size: 1.05rem; color: var(--dim); margin-bottom: 1.5rem; max-width: 800px; line-height: 1.7; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+  .card h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 0.5rem; font-weight: 500; }
+  .card ul { list-style: none; padding: 0; }
+  .card ul li { padding: 0.28rem 0; font-size: 0.9rem; position: relative; padding-left: 1.1rem; }
+  .card ul li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .card.skill-card { border-left: 3px solid var(--skill-accent); }
+  .card.skill-card ul li::before { background: var(--skill-accent); }
+
+  .code-block {
+    background: var(--code-bg); color: var(--code-fg); border-radius: 8px;
+    padding: 1rem 1.2rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; line-height: 1.65; overflow-x: auto; margin-top: 0.6rem;
+  }
+  .code-block .comment { color: #6c7086; } .code-block .str { color: #a6e3a1; }
+  .code-block .key { color: #89b4fa; } .code-block .fn { color: #f9e2af; }
+
+  .tag { display: inline-block; padding: 0.12rem 0.5rem; border-radius: 16px; font-size: 0.72rem; font-weight: 600; margin-right: 0.3rem; }
+  .tag-read { background: #dbeafe; color: #1d4ed8; }
+  .tag-write { background: #fce7f3; color: #be185d; }
+  .tag-util { background: #d1fae5; color: #065f46; }
+  .tag-cc { background: #fef3c7; color: #92400e; }
+  .tag-skill { background: #fed7aa; color: #9a3412; }
+
+  .tip { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 0.8rem 1rem; border-radius: 0 6px 6px 0; margin-top: 0.8rem; font-size: 0.85rem; color: #92400e; }
+
+  .workflow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0; }
+  .workflow .step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 1rem; font-size: 0.82rem; font-weight: 500; }
+  .workflow .arrow { font-size: 1.2rem; color: var(--accent); font-weight: 700; }
+  .workflow .step.skill-step { border-color: var(--skill-accent); color: var(--skill-accent); }
+
+  .param-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.6rem; }
+  .param-table th { text-align: left; padding: 0.4rem 0.6rem; background: #f3f4f6; font-weight: 600; border-bottom: 2px solid var(--border); }
+  .param-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border); }
+  .param-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+  .required { color: var(--accent5); font-weight: 600; }
+
+  .nav { position: fixed; right: 1.2rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 100; }
+  .nav a { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.12); display: block; transition: all 0.2s; }
+  .nav a:hover { background: var(--accent); transform: scale(1.6); }
+
+  .kb-hint {
+    position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.65); color: #fff; padding: 0.35rem 0.9rem;
+    border-radius: 16px; font-size: 0.72rem; opacity: 0.5; z-index: 100; pointer-events: none;
+  }
+
+  .vs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.5rem; }
+  .vs-table th, .vs-table td { padding: 0.4rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; }
+  .vs-table th { background: #f3f4f6; font-weight: 600; }
+  .vs-table td:first-child { font-weight: 500; }
+
+  @media (max-width: 900px) { .slide { padding: 2rem 1.2rem; } .cover h1 { font-size: 2rem; } .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"></nav>
+<div class="kb-hint">Scroll / Space / Arrow keys to navigate</div>
+
+<!-- ==================== SLIDE 0: Cover ==================== -->
+<section class="slide cover" data-num="">
+  <div class="figma-logo">
+    <span style="background:#f24e1e"></span><span style="background:#ff7262"></span>
+    <span style="background:#a259ff"></span><span style="background:#1abcfe"></span><span style="background:#0acf83"></span>
+  </div>
+  <h1>Figma MCP Server</h1>
+  <p class="subtitle">17 Tools + 7 Skills 完全使用指南</p>
+  <p class="meta">Official Remote MCP &middot; mcp.figma.com &middot; Plugin: figma@claude-plugins-official &middot; 2026.04</p>
+</section>
+
+<!-- ==================== SLIDE 1: Architecture ==================== -->
+<section class="slide" data-num="01 / 30">
+  <h2>架构：MCP Tools vs Skills</h2>
+  <p class="desc">Figma MCP 由两层组成：底层的 17 个原子 API 工具 + 上层的 7 个工作流 Skill。日常用 Skill（套餐），精细控制用 Tool（单点）。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4><span class="tag tag-read">底层</span> MCP Tools — 17 个原子 API</h4>
+      <ul>
+        <li>由 mcp.figma.com 远程服务器提供</li>
+        <li>每个工具做一件事：读截图、取元数据、写画布...</li>
+        <li>需要手动传参（fileKey, nodeId 等）</li>
+        <li>需要自己编排调用顺序</li>
+        <li>类比：单个 API endpoint</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4><span class="tag tag-skill">上层</span> Skills — 7 个工作流模板</h4>
+      <ul>
+        <li>由 figma@claude-plugins-official 插件提供</li>
+        <li>封装完整工作流 + 最佳实践 + 错误处理</li>
+        <li>自动编排多个 Tool 的调用顺序</li>
+        <li>通过 /skill-name 触发</li>
+        <li>类比：封装好的 SDK 方法</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">原则：能用 Skill 就用 Skill，Skill 覆盖不了的场景再直接调 Tool。</div>
+</section>
+
+<!-- ==================== SLIDE 2: Overview ==================== -->
+<section class="slide" data-num="02 / 30">
+  <h2>工具全景总览</h2>
+  <div class="grid-2" style="margin-bottom:1rem;">
+    <div class="card">
+      <h4><span class="tag tag-read">READ</span> 设计读取 (6)</h4>
+      <ul>
+        <li><b>get_design_context</b> — 核心：设计转代码</li>
+        <li><b>get_screenshot</b> — 节点截图</li>
+        <li><b>get_metadata</b> — XML 结构元数据</li>
+        <li><b>get_figjam</b> — FigJam 白板内容</li>
+        <li><b>get_variable_defs</b> — 设计 Token / Variable</li>
+        <li><b>search_design_system</b> — 搜索组件/变量/样式</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="tag tag-write">WRITE</span> 设计写入 (4)</h4>
+      <ul>
+        <li><b>use_figma</b> — 万能写入 (Plugin API JS)</li>
+        <li><b>generate_figma_design</b> — 网页截取到 Figma</li>
+        <li><b>generate_diagram</b> — Mermaid 生成流程图</li>
+        <li><b>create_new_file</b> — 创建新 Figma 文件</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="tag tag-cc">CODE CONNECT</span> 组件映射 (5)</h4>
+      <ul>
+        <li><b>add_code_connect_map</b> — 添加单个映射</li>
+        <li><b>get_code_connect_map</b> — 查询已有映射</li>
+        <li><b>get_code_connect_suggestions</b> — AI 建议映射</li>
+        <li><b>get_context_for_code_connect</b> — 组件属性元数据</li>
+        <li><b>send_code_connect_mappings</b> — 批量保存映射</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4><span class="tag tag-skill">SKILLS</span> 工作流 (7)</h4>
+      <ul>
+        <li><b>/figma-implement-design</b> — Figma → 代码 (1:1)</li>
+        <li><b>/figma-use</b> — use_figma 前置必备</li>
+        <li><b>/figma-generate-design</b> — 代码 → Figma 画布</li>
+        <li><b>/figma-generate-library</b> — 构建设计系统库</li>
+        <li><b>/figma-code-connect</b> — 创建 .figma.js 映射</li>
+        <li><b>/figma-create-design-system-rules</b> — 生成规则</li>
+        <li><b>/figma-to-localui</b> — Figma → Vue CSS 同步</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:0.5rem">
+    <h4><span class="tag tag-util">UTIL</span> 辅助 (2)</h4>
+    <ul style="display:flex; gap:2rem;">
+      <li><b>whoami</b> — 当前用户 + planKey</li>
+      <li><b>create_design_system_rules</b> — 生成设计规则模板</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== DIVIDER: READ ==================== -->
+<section class="slide divider" data-num="">
+  <h2>READ</h2>
+  <p>从 Figma 读取设计数据 — 6 个工具</p>
+</section>
+
+<!-- ==================== T01: get_design_context ==================== -->
+<section class="slide" data-num="04 / 30">
+  <h2><span class="num">T01</span> get_design_context</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__get_design_context</div>
+  <p class="desc">核心工具 — 设计转代码的主力。给一个 Figma 节点，返回 React+Tailwind 参考代码 + 截图 + Code Connect 提示 + 资源下载 URL。这是你最常用的工具。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>关键参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">nodeId *</span></td><td>节点 ID，如 "123:456"（URL 中的 - 转 :）</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>从 URL /design/ 后提取</td></tr>
+        <tr><td>excludeScreenshot</td><td>省略截图节省 context token</td></tr>
+        <tr><td>disableCodeConnect</td><td>不走 Code Connect 映射</td></tr>
+        <tr><td>forceCode</td><td>节点太大时强制返回代码</td></tr>
+        <tr><td>clientFrameworks</td><td>"react", "vue" 等（用于日志）</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>返回的是参考代码，需适配你的技术栈（Vue/React/Swift...）</li>
+        <li>节点太大只返回 metadata，加 forceCode=true 强制</li>
+        <li>默认包含截图，除非设 excludeScreenshot</li>
+        <li>如果有 Code Connect 映射，会直接返回你的组件代码</li>
+        <li>URL 解析：branch URL 用 branchKey 作 fileKey</li>
+        <li>返回的资源 URL 有 7 天有效期，及时下载</li>
+      </ul>
+    </div>
+  </div>
+  <div class="code-block">
+    <span class="comment">// 从 URL 提取参数</span><br>
+    <span class="comment">// https://figma.com/design/<span class="key">ABC123</span>/MyApp?node-id=<span class="key">12-34</span></span><br>
+    <span class="comment">// → fileKey = "ABC123", nodeId = "12:34"</span><br><br>
+    <span class="comment">// 返回内容包含：</span><br>
+    <span class="comment">// 1. code — React+Tailwind 参考代码</span><br>
+    <span class="comment">// 2. screenshot — 节点截图</span><br>
+    <span class="comment">// 3. assets — { imgLogo: "https://figma.com/api/mcp/asset/..." }</span><br>
+    <span class="comment">// 4. hints — Code Connect / 组件文档链接 / 设计注释</span>
+  </div>
+</section>
+
+<!-- ==================== T02: get_screenshot ==================== -->
+<section class="slide" data-num="05 / 30">
+  <h2><span class="num">T02</span> get_screenshot</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__get_screenshot</div>
+  <p class="desc">生成指定节点的截图。轻量级预览工具 — 只看设计不生成代码时用它。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">nodeId *</span></td><td>节点 ID</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>文件 Key</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>比 get_design_context 轻量很多，只返回图片</li>
+        <li>适合实现前确认"选对节点没"</li>
+        <li>实现后对比验证"代码和设计一不一致"</li>
+        <li>配合 get_metadata：先看结构 → 截图确认 → 取代码</li>
+        <li>大页面建议分段截图（按 section nodeId），全页截图分辨率低会漏细节</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">get_design_context 默认就含截图。单独用 get_screenshot 的场景：只看不写代码、验证实现结果、逐段检查大页面。</div>
+</section>
+
+<!-- ==================== T03: get_metadata ==================== -->
+<section class="slide" data-num="06 / 30">
+  <h2><span class="num">T03</span> get_metadata</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__get_metadata</div>
+  <p class="desc">获取节点的 XML 结构元数据 — 节点 ID、图层类型、名称、位置、尺寸。没有样式细节，但结构一目了然。适合大文件先看骨架。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">nodeId *</span></td><td>可传页面 ID "0:1" 看整页</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>文件 Key</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>传 nodeId="0:1" 获取整个页面结构概览</li>
+        <li>从结果中找到目标节点 ID 再调 get_design_context</li>
+        <li>不要对 Figma Make 文件使用</li>
+        <li>get_design_context 返回截断时，先用它找子节点 ID</li>
+        <li>返回 XML 格式，包含层级关系</li>
+      </ul>
+    </div>
+  </div>
+  <div class="workflow">
+    <div class="step">get_metadata (骨架)</div><span class="arrow">&rarr;</span>
+    <div class="step">get_screenshot (确认)</div><span class="arrow">&rarr;</span>
+    <div class="step">get_design_context (代码)</div>
+  </div>
+</section>
+
+<!-- ==================== T04: get_figjam ==================== -->
+<section class="slide" data-num="07 / 30">
+  <h2><span class="num">T04</span> get_figjam</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__get_figjam</div>
+  <p class="desc">专门读取 FigJam 白板（figma.com/board/...）的内容。可读取便签、连接线、形状等元素，将白板内容转为结构化数据。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">nodeId *</span></td><td>"0:1" 获取全部</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>文件 Key</td></tr>
+        <tr><td>includeImagesOfNodes</td><td>包含节点图片 (默认 true)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>只适用于 FigJam 文件（URL 含 /board/）</li>
+        <li>普通 Design 文件不能用此工具</li>
+        <li>适合将头脑风暴/流程图转为代码逻辑</li>
+        <li>设 includeImagesOfNodes=false 减少响应体积</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== T05: get_variable_defs ==================== -->
+<section class="slide" data-num="08 / 30">
+  <h2><span class="num">T05</span> get_variable_defs</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__get_variable_defs</div>
+  <p class="desc">获取节点关联的 Figma Variable 定义 — 颜色、字体、间距等设计 Token。返回格式如 {'color/primary': '#a259ff', 'spacing/lg': '24px'}。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">nodeId *</span></td><td>节点 ID</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>文件 Key</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>提取设计系统 Token 值，映射到 CSS 变量 / Tailwind</li>
+        <li>确保代码和设计用同一套颜色/间距</li>
+        <li>配合 search_design_system 找完整 Token 体系</li>
+        <li>返回的是 Variable 定义，不只是当前节点用了哪些</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== T06: search_design_system ==================== -->
+<section class="slide" data-num="09 / 30">
+  <h2><span class="num">T06</span> search_design_system</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__search_design_system</div>
+  <p class="desc">跨所有已链接库搜索设计系统资产 — 组件、变量、样式。用关键词找 Button、color、spacing 等现成资源。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">query *</span></td><td>搜索关键词</td></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>文件 Key</td></tr>
+        <tr><td>includeComponents</td><td>含组件 (默认 true)</td></tr>
+        <tr><td>includeVariables</td><td>含变量 (默认 true)</td></tr>
+        <tr><td>includeStyles</td><td>含样式 (默认 true)</td></tr>
+        <tr><td>includeLibraryKeys</td><td>限定搜索范围到特定库</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>创建组件前先搜索！避免重复造轮子</li>
+        <li>搜索跨所有已订阅库，不只是当前文件</li>
+        <li>多用短关键词："button" "gray" "space" "shadow"</li>
+        <li>返回 component key 可用 importComponentByKeyAsync 导入</li>
+        <li>搜颜色时设 includeComponents=false 减少噪音</li>
+        <li>用 includeLibraryKeys 过滤只看特定库</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DIVIDER: WRITE ==================== -->
+<section class="slide divider" data-num="">
+  <h2>WRITE</h2>
+  <p>向 Figma 写入设计 — 4 个工具</p>
+</section>
+
+<!-- ==================== T07: use_figma ==================== -->
+<section class="slide" data-num="11 / 30">
+  <h2><span class="num">T07</span> use_figma</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__use_figma</div>
+  <p class="desc">万能写入工具 — 在 Figma 文件中执行 Plugin API JavaScript。可创建/编辑/删除任何 Figma 对象。50KB 代码限制。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">fileKey *</span></td><td>目标文件 Key</td></tr>
+        <tr><td><span class="required">code *</span></td><td>Plugin API JS 代码</td></tr>
+        <tr><td><span class="required">description *</span></td><td>代码功能描述</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>关键规则 (必记)</h4>
+      <ul>
+        <li>必须先加载 <b>/figma-use</b> skill 再调用！</li>
+        <li>用 <code>return</code> 返回数据，不用 figma.closePlugin()</li>
+        <li>颜色 0-1 范围，不是 0-255</li>
+        <li>Inter "Semi Bold" 有空格！不是 "SemiBold"</li>
+        <li>换页用 <code>await figma.setCurrentPageAsync()</code></li>
+        <li>FILL 必须在 appendChild 之后设置</li>
+        <li>文字操作前必须 loadFontAsync</li>
+        <li>失败时 STOP，不要盲目重试</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">use_figma 是默认写入工具。唯一例外：首次从网页捕获用 generate_figma_design。更新已捕获页面仍用 use_figma。</div>
+</section>
+
+<!-- ==================== T08: generate_figma_design ==================== -->
+<section class="slide" data-num="12 / 30">
+  <h2><span class="num">T08</span> generate_figma_design</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__generate_figma_design</div>
+  <p class="desc">将网页 URL 或 HTML 截取并导入 Figma 设计文件。支持 localhost 开发服务器和外部网站。异步操作，需要轮询。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td>outputMode</td><td>newFile / existingFile / clipboard</td></tr>
+        <tr><td>captureId</td><td>轮询状态（第二次调用传）</td></tr>
+        <tr><td>fileKey</td><td>existingFile 的目标文件</td></tr>
+        <tr><td>fileName</td><td>newFile 的文件名</td></tr>
+        <tr><td>planKey</td><td>团队/组织 Key</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>首次不传 outputMode → 获取捕获指引</li>
+        <li>每 5 秒用 captureId 轮询，最多 10 次</li>
+        <li>每个 captureId 单次使用，一页一个 ID</li>
+        <li>更新已捕获页面用 use_figma，不要重复捕获</li>
+        <li>外部 URL 走 Playwright 截取，localhost 直接捕获</li>
+      </ul>
+    </div>
+  </div>
+  <div class="workflow">
+    <div class="step">调用（无 outputMode）</div><span class="arrow">&rarr;</span>
+    <div class="step">选模式</div><span class="arrow">&rarr;</span>
+    <div class="step">每 5s 轮询 captureId</div><span class="arrow">&rarr;</span>
+    <div class="step">completed!</div>
+  </div>
+</section>
+
+<!-- ==================== T09: generate_diagram ==================== -->
+<section class="slide" data-num="13 / 30">
+  <h2><span class="num">T09</span> generate_diagram</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__generate_diagram</div>
+  <p class="desc">用 Mermaid.js 语法在 FigJam 中生成图表。支持：流程图、时序图、状态图、甘特图。不支持：类图、ER 图、时间线。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">name *</span></td><td>图表标题</td></tr>
+        <tr><td><span class="required">mermaidSyntax *</span></td><td>Mermaid.js 代码</td></tr>
+        <tr><td>userIntent</td><td>用户意图描述</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>flowchart 默认 LR 方向，所有文本加引号</li>
+        <li>不要用 emoji、不要用 \n 换行</li>
+        <li>甘特图不用颜色、时序图不用 notes</li>
+        <li>返回的 URL 必须展示给用户点击</li>
+        <li>不支持移动单个形状，需去 Figma 手动调</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== T10: create_new_file ==================== -->
+<section class="slide" data-num="14 / 30">
+  <h2><span class="num">T10</span> create_new_file</h2>
+  <div class="tool-name">mcp__plugin_figma_figma__create_new_file</div>
+  <p class="desc">在用户草稿中创建新的空白 Figma Design 或 FigJam 文件。返回 fileKey 和 URL，供后续 use_figma 写入内容。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>参数</h4>
+      <table class="param-table">
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td><span class="required">fileName *</span></td><td>文件名</td></tr>
+        <tr><td><span class="required">planKey *</span></td><td>团队 Key（从 whoami 获取）</td></tr>
+        <tr><td><span class="required">editorType *</span></td><td>"design" 或 "figjam"</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>必须有 planKey — 先调 whoami</li>
+        <li>单 plan 直接用，多 plan 让用户选团队</li>
+        <li>创建后拿 fileKey → use_figma 写内容</li>
+      </ul>
+    </div>
+  </div>
+  <div class="workflow">
+    <div class="step">whoami</div><span class="arrow">&rarr;</span>
+    <div class="step">create_new_file</div><span class="arrow">&rarr;</span>
+    <div class="step">use_figma (写入)</div>
+  </div>
+</section>
+
+<!-- ==================== DIVIDER: CODE CONNECT ==================== -->
+<section class="slide divider" data-num="">
+  <h2>CODE CONNECT</h2>
+  <p>Figma 组件与代码组件的双向映射 — 5 个工具</p>
+</section>
+
+<!-- ==================== T11-15: Code Connect ==================== -->
+<section class="slide" data-num="16 / 30">
+  <h2><span class="num">T11-15</span> Code Connect 工具组</h2>
+  <p class="desc">5 个工具协同完成 Figma 组件 ↔ 代码组件的映射。映射后 get_design_context 返回你的真实组件代码而非通用代码。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>5 个工具各司其职</h4>
+      <table class="vs-table">
+        <tr><th>工具</th><th>作用</th></tr>
+        <tr><td><b>get_code_connect_suggestions</b></td><td>AI 自动建议哪些组件该映射</td></tr>
+        <tr><td><b>get_context_for_code_connect</b></td><td>获取组件属性/Variant/子节点树</td></tr>
+        <tr><td><b>add_code_connect_map</b></td><td>添加单个映射（支持 16 种框架）</td></tr>
+        <tr><td><b>send_code_connect_mappings</b></td><td>批量保存多个映射</td></tr>
+        <tr><td><b>get_code_connect_map</b></td><td>查询已有映射关系</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>标准工作流</h4>
+      <ul>
+        <li><b>Step 1</b>: get_code_connect_suggestions → 找出未映射组件</li>
+        <li><b>Step 2</b>: get_context_for_code_connect → 看组件有哪些 props</li>
+        <li><b>Step 3</b>: 在代码库中找对应组件</li>
+        <li><b>Step 4</b>: add_code_connect_map 或 send_code_connect_mappings 保存</li>
+        <li><b>Step 5</b>: get_code_connect_map 验证映射成功</li>
+      </ul>
+      <div style="margin-top:0.5rem; font-size:0.82rem; color:var(--dim);">
+        支持框架：React, Vue, Swift, SwiftUI, Compose, Kotlin, Flutter, Web Components, Svelte, Storybook, JS, Java, PHP, Markdown 等 16 种
+      </div>
+    </div>
+  </div>
+  <div class="tip">映射完成后，get_design_context 会自动返回你项目中的 &lt;Button variant="primary"&gt; 而非通用 Tailwind 代码。一次投入，长期收益。</div>
+</section>
+
+<!-- ==================== DIVIDER: UTIL ==================== -->
+<section class="slide divider" data-num="">
+  <h2>UTIL</h2>
+  <p>辅助工具 — 2 个</p>
+</section>
+
+<!-- ==================== T16-17: Util ==================== -->
+<section class="slide" data-num="18 / 30">
+  <h2><span class="num">T16</span> whoami &nbsp; <span class="num">T17</span> create_design_system_rules</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h4>whoami</h4>
+      <p style="font-size:0.88rem; margin:0.5rem 0;">无参数直接调用。返回当前用户信息 + planKey 列表。</p>
+      <ul>
+        <li>遇到权限问题先调用确认身份</li>
+        <li>返回 planKey，create_new_file 需要</li>
+        <li>多团队用户返回多个 plan</li>
+        <li>认证排错第一步</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>create_design_system_rules</h4>
+      <p style="font-size:0.88rem; margin:0.5rem 0;">为项目生成设计系统规则模板。可选传 clientFrameworks 和 clientLanguages。</p>
+      <ul>
+        <li>在项目初始阶段调用一次</li>
+        <li>生成的规则保存到 CLAUDE.md / AGENTS.md / .cursor/rules/</li>
+        <li>后续所有 design-to-code 输出风格统一</li>
+        <li>配合 /figma-create-design-system-rules skill 更佳</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DIVIDER: SKILLS ==================== -->
+<section class="slide divider skill-divider" data-num="">
+  <h2>SKILLS</h2>
+  <p>7 个上层工作流 — 封装 Tools 的最佳实践</p>
+</section>
+
+<!-- ==================== S01: figma-implement-design ==================== -->
+<section class="slide" data-num="20 / 30">
+  <h2><span class="num skill-num">S01</span> /figma-implement-design</h2>
+  <div class="tool-name skill-name">Figma 设计 → 项目代码 (1:1 复刻)</div>
+  <p class="desc">最常用的 Skill — 给一个 Figma 链接，按 7 步标准流程生成生产级代码。自动适配你的技术栈、复用项目组件、下载资源、验证视觉一致性。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>7 步标准流程</h4>
+      <ul>
+        <li><b>Step 1</b>: 解析 URL → 提取 fileKey + nodeId</li>
+        <li><b>Step 2</b>: get_design_context → 获取代码+截图+Token</li>
+        <li><b>Step 3</b>: get_screenshot → 视觉参考基准</li>
+        <li><b>Step 4</b>: 下载资源（图片/SVG/图标）</li>
+        <li><b>Step 5</b>: 翻译为项目技术栈（Vue/React/...）</li>
+        <li><b>Step 6</b>: 追求 1:1 视觉还原</li>
+        <li><b>Step 7</b>: 对照截图验证 Checklist</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>使用技巧</h4>
+      <ul>
+        <li>节点太大被截断 → 自动 get_metadata 找子节点分批取</li>
+        <li>优先复用项目已有组件，不重复造轮子</li>
+        <li>Figma Token 映射到项目 Token，不硬编码</li>
+        <li>资源 URL 来自 Figma 资源端点，直接下载</li>
+        <li>偏差记录在代码注释中说明原因</li>
+      </ul>
+    </div>
+  </div>
+  <div class="code-block">
+    <span class="comment">// 使用方式</span><br>
+    <span class="str">/figma-implement-design</span><br>
+    <span class="str">"帮我用 Vue3 实现这个设计：https://figma.com/design/xxx/yyy?node-id=12-34"</span>
+  </div>
+</section>
+
+<!-- ==================== S02: figma-use ==================== -->
+<section class="slide" data-num="21 / 30">
+  <h2><span class="num skill-num">S02</span> /figma-use</h2>
+  <div class="tool-name skill-name">use_figma 的强制前置 Skill</div>
+  <p class="desc">每次调用 use_figma 工具前必须先加载此 Skill。它提供 Plugin API 的完整规则、坑点、参考文档索引。不加载直接调会出各种难以调试的错误。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>它加载了什么</h4>
+      <ul>
+        <li>14 条关键规则（return 模式、颜色范围、页面切换...）</li>
+        <li>页面上下文重置规则（每次调用重置到第一页）</li>
+        <li>错误恢复协议（失败 = 原子性，无残留）</li>
+        <li>增量工作流指导（一步一验证）</li>
+        <li>飞行前检查清单（提交前 14 项必查）</li>
+        <li>10 份参考文档的索引（按需加载）</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>核心要点速查</h4>
+      <ul>
+        <li>用 <code>return</code> 返回数据 + 所有创建的 node ID</li>
+        <li>不能用 figma.notify()、console.log()</li>
+        <li>颜色 0-1，不是 0-255</li>
+        <li>await 每个 Promise，不能 fire-and-forget</li>
+        <li>FILL/HUG 必须在 appendChild 之后</li>
+        <li>字体用前必须 loadFontAsync</li>
+        <li>失败 = 未执行，安全重试</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">不要跳过这个 Skill！调 use_figma 前必须 /figma-use。Skill 里有 plugin-api-standalone.d.ts 可以 grep 查任何 API 签名。</div>
+</section>
+
+<!-- ==================== S03: figma-generate-design ==================== -->
+<section class="slide" data-num="22 / 30">
+  <h2><span class="num skill-num">S03</span> /figma-generate-design</h2>
+  <div class="tool-name skill-name">代码/描述 → Figma 设计画布</div>
+  <p class="desc">将代码页面或文字描述转化为 Figma 设计稿。核心理念：不画裸矩形，而是发现并复用设计系统中的组件、变量、样式，逐段组装画面。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>6 步工作流</h4>
+      <ul>
+        <li><b>Step 1</b>: 理解画面 — 读源码，列出各段落和组件</li>
+        <li><b>Step 2</b>: 发现设计系统 — search_design_system 找组件/变量/样式</li>
+        <li><b>Step 3</b>: 创建 Page Wrapper Frame</li>
+        <li><b>Step 4</b>: 逐段构建（每段一个 use_figma 调用）</li>
+        <li><b>Step 5</b>: 截图验证全页</li>
+        <li><b>Step 6</b>: 更新已有画面（定位→修改→验证）</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>关键原则</h4>
+      <ul>
+        <li>绝不硬编码 hex 颜色 / px 间距 — 用变量绑定</li>
+        <li>优先 importComponentByKeyAsync 复用组件实例</li>
+        <li>用 setBoundVariable / setBoundVariableForPaint 绑 Token</li>
+        <li>每段用 get_screenshot 验证，不要全做完才看</li>
+        <li>文字覆盖用 setProperties() 而非直接改 characters</li>
+        <li>Web 应用可并行 generate_figma_design 截取做参考</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== S04: figma-generate-library ==================== -->
+<section class="slide" data-num="23 / 30">
+  <h2><span class="num skill-num">S04</span> /figma-generate-library</h2>
+  <div class="tool-name skill-name">从代码库构建完整的 Figma 设计系统</div>
+  <p class="desc">大型工程 Skill — 需要 20~100+ 次 use_figma 调用，分 5 个阶段构建专业级设计系统。包含 Token 架构、组件变体、文档页面。每个阶段有用户确认检查点。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>5 阶段流程</h4>
+      <ul>
+        <li><b>Phase 0: Discovery</b> — 分析代码 + 检查 Figma + 锁定范围</li>
+        <li><b>Phase 1: Foundations</b> — 创建 Variable 集合/模式/别名/样式</li>
+        <li><b>Phase 2: File Structure</b> — 页面骨架 + 基础文档</li>
+        <li><b>Phase 3: Components</b> — 逐个组件（原子→分子顺序）</li>
+        <li><b>Phase 4: Integration QA</b> — Code Connect + 审计</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>关键规则</h4>
+      <ul>
+        <li>永远不要一步到位 — 最小单元 + 验证</li>
+        <li>Variable 必须在 Component 之前创建</li>
+        <li>每个 Variable 必须设 scopes（不用 ALL_SCOPES）</li>
+        <li>每个 Variable 设 code syntax (var(--xxx))</li>
+        <li>语义层 alias 到 Primitive 层，不复制值</li>
+        <li>Variant 矩阵 > 30 就拆分子组件</li>
+        <li>状态持久化到 /tmp/dsb-state-{RUN_ID}.json</li>
+        <li>每阶段必须用户确认才能继续</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== S05: figma-code-connect ==================== -->
+<section class="slide" data-num="24 / 30">
+  <h2><span class="num skill-num">S05</span> /figma-code-connect</h2>
+  <div class="tool-name skill-name">创建 .figma.js Code Connect 模板文件</div>
+  <p class="desc">将 Figma 组件映射到代码库中的真实组件。创建 parserless 模板文件（.figma.js），让 Figma Dev Mode 直接显示项目组件代码。需要 Organization/Enterprise 计划。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>6 步流程</h4>
+      <ul>
+        <li><b>Step 1</b>: 解析 Figma URL</li>
+        <li><b>Step 2</b>: get_code_connect_suggestions 发现未映射组件</li>
+        <li><b>Step 3</b>: get_context_for_code_connect 获取属性定义</li>
+        <li><b>Step 4</b>: 在代码库中找到匹配的组件</li>
+        <li><b>Step 5</b>: 创建 .figma.js 模板（属性映射）</li>
+        <li><b>Step 6</b>: 验证模板覆盖所有属性</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>属性映射方法</h4>
+      <table class="param-table">
+        <tr><th>Figma 属性</th><th>模板方法</th></tr>
+        <tr><td>TEXT</td><td>instance.getString('Name')</td></tr>
+        <tr><td>BOOLEAN</td><td>instance.getBoolean('Name', {true:..., false:...})</td></tr>
+        <tr><td>VARIANT</td><td>instance.getEnum('Name', {'FigmaVal': 'codeVal'})</td></tr>
+        <tr><td>INSTANCE_SWAP</td><td>instance.getInstanceSwap('Name')</td></tr>
+        <tr><td>子图层</td><td>instance.findInstance('LayerName')</td></tr>
+        <tr><td>文本图层</td><td>instance.findText('Name').textContent</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="tip">必须是已发布到 Team Library 的组件才能用 Code Connect。Free/Professional 计划不支持。</div>
+</section>
+
+<!-- ==================== S06: figma-create-design-system-rules ==================== -->
+<section class="slide" data-num="25 / 30">
+  <h2><span class="num skill-num">S06</span> /figma-create-design-system-rules</h2>
+  <div class="tool-name skill-name">生成项目专属的设计系统规则</div>
+  <p class="desc">分析你的代码库结构、组件模式、样式方案，生成一份规则文件保存到 CLAUDE.md / AGENTS.md / .cursor/rules/。后续所有 Figma 转代码都自动遵循项目规范。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>5 步流程</h4>
+      <ul>
+        <li><b>Step 1</b>: 调用 create_design_system_rules 获取模板</li>
+        <li><b>Step 2</b>: 分析代码库 — 组件位置/命名/样式/Token</li>
+        <li><b>Step 3</b>: 生成项目专属规则</li>
+        <li><b>Step 4</b>: 保存到对应的规则文件</li>
+        <li><b>Step 5</b>: 用简单组件测试验证</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>规则覆盖范围</h4>
+      <ul>
+        <li><b>组件规则</b>: 位置、命名、导出模式</li>
+        <li><b>样式规则</b>: CSS 方案、Token 位置、禁硬编码</li>
+        <li><b>Figma 流程</b>: 必须先 get_design_context 再实现</li>
+        <li><b>资源规则</b>: localhost 资源直接用、不装新图标库</li>
+        <li><b>项目规范</b>: 路由/状态管理/import 约定</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip">项目初始化时跑一次就够了。相当于给 AI 写了一份"项目新人入职手册"。</div>
+</section>
+
+<!-- ==================== S07: figma-to-localui ==================== -->
+<section class="slide" data-num="26 / 30">
+  <h2><span class="num skill-num">S07</span> /figma-to-localui</h2>
+  <div class="tool-name skill-name">Figma 节点样式 → Vue 组件 CSS 变量同步</div>
+  <p class="desc">你自己定制的 Skill — 从 Figma 选区实时读取样式值（尺寸/圆角/颜色/字体），和 Vue 组件的 CSS 变量对比，精准更新 variables.css。支持本地插件和官方远程双 MCP。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>5 步工作流</h4>
+      <ul>
+        <li><b>Step 1</b>: Figma 选区 → get_selection + get_node_info</li>
+        <li><b>Step 2</b>: 提取样式值（尺寸/圆角/填充/描边/文字）</li>
+        <li><b>Step 3</b>: 在代码中找对应 Vue 组件和 CSS 变量</li>
+        <li><b>Step 4</b>: 对比差异 → 修改 variables.css</li>
+        <li><b>Step 5</b>: 资源替换（SVG 图标/背景图）</li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>双 MCP 策略</h4>
+      <table class="vs-table">
+        <tr><th>场景</th><th>用哪个 MCP</th></tr>
+        <tr><td>日常样式对比</td><td>本地插件（无限次/实时）</td></tr>
+        <tr><td>下载资源图片</td><td>官方远程（7 天 URL）</td></tr>
+        <tr><td>批量导出 SVG</td><td>本地插件 get_svg</td></tr>
+      </table>
+      <ul style="margin-top:0.5rem;">
+        <li>优先改 CSS 变量，而非改模板</li>
+        <li>局部覆盖全局 Token，不影响其他模块</li>
+        <li>SVG 替换 fill="white" → fill="currentColor"</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE: Skill vs Tool 对照 ==================== -->
+<section class="slide" data-num="27 / 30">
+  <h2>Skill ↔ Tool 调用关系</h2>
+  <p class="desc">每个 Skill 内部编排了哪些 MCP Tool，一目了然。</p>
+  <table class="vs-table" style="max-width:900px;">
+    <tr><th style="min-width:220px;">Skill</th><th>内部调用的 MCP Tools</th><th>触发方式</th></tr>
+    <tr>
+      <td><span class="tag tag-skill">S01</span> implement-design</td>
+      <td>get_design_context → get_screenshot → search_design_system</td>
+      <td>"实现这个设计：[URL]"</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S02</span> figma-use</td>
+      <td>use_figma（提供调用规则，不直接调别的工具）</td>
+      <td>调 use_figma 前自动触发</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S03</span> generate-design</td>
+      <td>search_design_system → use_figma (N 次) → get_screenshot</td>
+      <td>"把这个页面写到 Figma"</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S04</span> generate-library</td>
+      <td>search_design_system → use_figma (20-100 次) → get_metadata → get_screenshot</td>
+      <td>"为我的项目建设计系统"</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S05</span> code-connect</td>
+      <td>get_code_connect_suggestions → get_context_for_code_connect → add_code_connect_map</td>
+      <td>"创建 Code Connect 映射"</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S06</span> design-system-rules</td>
+      <td>create_design_system_rules</td>
+      <td>"生成设计系统规则"</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-skill">S07</span> figma-to-localui</td>
+      <td>get_selection + get_node_info (本地) / get_design_context (远程)</td>
+      <td>/figma-to-localui</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ==================== SLIDE: 实战工作流 ==================== -->
+<section class="slide" data-num="28 / 30">
+  <h2>Vue 项目实战工作流</h2>
+  <p class="desc">从零开始用 Figma MCP 复刻设计的完整路径。</p>
+  <div class="grid-2">
+    <div class="card skill-card">
+      <h4>一次性设置（做一次就够）</h4>
+      <ul>
+        <li><b>1. 生成规则</b>: /figma-create-design-system-rules<br><span style="color:var(--dim);font-size:0.8rem;">→ 分析项目结构，生成 CLAUDE.md 规范</span></li>
+        <li><b>2. 提取 Token</b>: get_variable_defs<br><span style="color:var(--dim);font-size:0.8rem;">→ 映射到 CSS 变量 / Tailwind / UnoCSS</span></li>
+        <li><b>3. 组件映射</b>: /figma-code-connect<br><span style="color:var(--dim);font-size:0.8rem;">→ Button.figma.js, Input.figma.js ...</span></li>
+      </ul>
+    </div>
+    <div class="card skill-card">
+      <h4>日常开发循环</h4>
+      <ul>
+        <li><b>1. 实现设计</b>: /figma-implement-design [URL]<br><span style="color:var(--dim);font-size:0.8rem;">→ 自动 7 步流程，生成 Vue SFC</span></li>
+        <li><b>2. 样式微调</b>: /figma-to-localui<br><span style="color:var(--dim);font-size:0.8rem;">→ 选中 Figma 节点，同步 CSS 变量差异</span></li>
+        <li><b>3. 代码 → Figma</b>: /figma-generate-design<br><span style="color:var(--dim);font-size:0.8rem;">→ 实现后同步回 Figma 保持双向一致</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE: 速查表 ==================== -->
+<section class="slide" data-num="29 / 30">
+  <h2>场景速查表</h2>
+  <table class="vs-table">
+    <tr><th style="min-width:280px;">我想...</th><th>用什么</th></tr>
+    <tr><td>把 Figma 设计转成 Vue/React 代码</td><td><span class="tag tag-skill">S01</span> /figma-implement-design</td></tr>
+    <tr><td>只看看设计长什么样</td><td><span class="tag tag-read">T02</span> get_screenshot</td></tr>
+    <tr><td>看大页面有哪些节点</td><td><span class="tag tag-read">T03</span> get_metadata (nodeId="0:1")</td></tr>
+    <tr><td>提取设计 Token / 变量</td><td><span class="tag tag-read">T05</span> get_variable_defs</td></tr>
+    <tr><td>搜索设计库中的组件</td><td><span class="tag tag-read">T06</span> search_design_system</td></tr>
+    <tr><td>在 Figma 中创建/编辑节点</td><td><span class="tag tag-skill">S02</span> /figma-use → <span class="tag tag-write">T07</span> use_figma</td></tr>
+    <tr><td>把网页截取到 Figma</td><td><span class="tag tag-write">T08</span> generate_figma_design</td></tr>
+    <tr><td>把代码页面写成 Figma 画面</td><td><span class="tag tag-skill">S03</span> /figma-generate-design</td></tr>
+    <tr><td>画流程图/时序图到 FigJam</td><td><span class="tag tag-write">T09</span> generate_diagram</td></tr>
+    <tr><td>读取 FigJam 白板</td><td><span class="tag tag-read">T04</span> get_figjam</td></tr>
+    <tr><td>建一套完整设计系统</td><td><span class="tag tag-skill">S04</span> /figma-generate-library</td></tr>
+    <tr><td>映射 Figma 组件到代码组件</td><td><span class="tag tag-skill">S05</span> /figma-code-connect</td></tr>
+    <tr><td>生成项目设计规范</td><td><span class="tag tag-skill">S06</span> /figma-create-design-system-rules</td></tr>
+    <tr><td>同步 Figma 样式到 Vue CSS 变量</td><td><span class="tag tag-skill">S07</span> /figma-to-localui</td></tr>
+    <tr><td>查看当前用户 / 获取 planKey</td><td><span class="tag tag-util">T16</span> whoami</td></tr>
+  </table>
+</section>
+
+<!-- ==================== SLIDE: End ==================== -->
+<section class="slide cover" data-num="30 / 30" style="background: linear-gradient(135deg, #0f3460, #1a1a2e);">
+  <div class="figma-logo">
+    <span style="background:#f24e1e"></span><span style="background:#ff7262"></span>
+    <span style="background:#a259ff"></span><span style="background:#1abcfe"></span><span style="background:#0acf83"></span>
+  </div>
+  <h1 style="font-size:2.6rem;">17 Tools + 7 Skills</h1>
+  <p class="subtitle">Skill 是套餐，Tool 是单点菜<br>能用 Skill 就用 Skill，需要精细控制才直接调 Tool</p>
+  <p class="meta" style="margin-top:2rem;">
+    安装: claude plugin install figma@claude-plugins-official<br>
+    认证: /mcp → figma → Authenticate<br>
+    开始: /figma-implement-design [Figma URL]
+  </p>
+</section>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+slides.forEach((s, i) => {
+  const a = document.createElement('a');
+  a.href = '#';
+  a.addEventListener('click', e => { e.preventDefault(); s.scrollIntoView({ behavior: 'smooth' }); });
+  nav.appendChild(a);
+});
+
+let current = 0;
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault(); current = Math.min(current + 1, slides.length - 1);
+    slides[current].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault(); current = Math.max(current - 1, 0);
+    slides[current].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      current = [...slides].indexOf(entry.target);
+      nav.querySelectorAll('a').forEach((a, i) => {
+        a.style.background = i === current ? '#a259ff' : 'rgba(0,0,0,0.12)';
+        a.style.transform = i === current ? 'scale(1.6)' : 'scale(1)';
+      });
+    }
+  });
+}, { threshold: 0.5 });
+slides.forEach(s => observer.observe(s));
+
+window.addEventListener('scroll', () => {
+  document.querySelector('.kb-hint').style.opacity = '0';
+}, { once: true });
+</script>
+</body>
+</html>
